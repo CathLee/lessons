@@ -3,6 +3,8 @@ import avatar from "../images/avatar.jpg";
 import { v4 as uuidv4 } from "uuid";
 import "./index.css";
 import classNames from "classnames";
+import Child1 from "../child/index01";
+import Child2 from "../child/index02";
 interface User {
   // 假设用户对象有 id 和 name，根据实际情况调整
   uid: string;
@@ -69,6 +71,8 @@ const Comments: FC = () => {
   const [type, setType] = useState<string>("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  const [name, setName] = useState("");
+  const [value, setValue] = useState("");
   const handleSubmit = () => {
     const param: Comment = {
       rpid: uuidv4(),
@@ -80,10 +84,16 @@ const Comments: FC = () => {
     // 使用不可变更新数据
     const newList = [...commentList, param];
     setCommentList(newList);
-    setContent('')
+    setContent("");
     // 2.聚焦 dom(useRef) - focus
-    inputRef.current?.focus()
+    inputRef.current?.focus();
   };
+  const handleClick = (name:string) => {
+    console.log(name)
+    setName(name)
+  };
+
+
 
   const handleClickTab = (type: string) => {
     setType(type);
@@ -195,6 +205,15 @@ const Comments: FC = () => {
           ))}
         </div>
       </div>
+      <Child1 name={name}>
+        <span>哈哈哈有意思</span>
+      </Child1>
+      <Child2 onHandleClick={handleClick}></Child2>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
     </>
   );
 };
