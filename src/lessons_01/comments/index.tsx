@@ -1,10 +1,18 @@
-import { FC, useEffect, useRef, useState } from "react";
+import {
+  FC,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import avatar from "../images/avatar.jpg";
 import { v4 as uuidv4 } from "uuid";
 import "./index.css";
 import classNames from "classnames";
 import Child1 from "../child/index01";
 import Child2 from "../child/index02";
+import A from "./A";
 interface User {
   // 假设用户对象有 id 和 name，根据实际情况调整
   uid: string;
@@ -65,6 +73,10 @@ const tabs = [
   { type: "hot", text: "最热" },
   { type: "time", text: "最新" },
 ];
+
+// learn context
+const msg = "this is a message";
+export const MsgContext = createContext<string | null>(null); // 创建 Context，并给定一个默认值
 const Comments: FC = () => {
   const [commentList, setCommentList] = useState<Comment[]>(list);
   const [content, setContent] = useState("");
@@ -73,6 +85,7 @@ const Comments: FC = () => {
 
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
+
   const handleSubmit = () => {
     const param: Comment = {
       rpid: uuidv4(),
@@ -88,12 +101,10 @@ const Comments: FC = () => {
     // 2.聚焦 dom(useRef) - focus
     inputRef.current?.focus();
   };
-  const handleClick = (name:string) => {
-    console.log(name)
-    setName(name)
+  const handleClick = (name: string) => {
+    console.log(name);
+    setName(name);
   };
-
-
 
   const handleClickTab = (type: string) => {
     setType(type);
@@ -209,6 +220,13 @@ const Comments: FC = () => {
         <span>哈哈哈有意思</span>
       </Child1>
       <Child2 onHandleClick={handleClick}></Child2>
+      {/* contextDemo */}
+
+      <MsgContext.Provider value={msg}>
+        <div>
+          <A></A>
+        </div>
+      </MsgContext.Provider>
       <input
         type="text"
         value={value}
