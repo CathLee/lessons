@@ -3,6 +3,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useReducer,
   useRef,
   useState,
 } from "react";
@@ -76,6 +77,15 @@ const tabs = [
 
 // learn context
 const msg = "this is a message";
+
+const reduer = (state:any,action:any)=>{
+  if(action.type === 'add'){
+    return {
+      age:state.age+1
+    }
+  }
+
+}
 export const MsgContext = createContext<string | null>(null); // 创建 Context，并给定一个默认值
 const Comments: FC = () => {
   const [commentList, setCommentList] = useState<Comment[]>(list);
@@ -86,6 +96,8 @@ const Comments: FC = () => {
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
 
+
+  const [state,dispatch] = useReducer(reduer,{age:20})
   const handleSubmit = () => {
     const param: Comment = {
       rpid: uuidv4(),
@@ -101,8 +113,10 @@ const Comments: FC = () => {
     // 2.聚焦 dom(useRef) - focus
     inputRef.current?.focus();
   };
-  const handleClick = (name: string) => {
+  const handleClick =  (name: string) => {
     console.log(name);
+    dispatch({type:'add'})
+    console.log(state?.age);
     setName(name);
   };
 
