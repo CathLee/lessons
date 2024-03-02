@@ -1,5 +1,6 @@
 import {
   FC,
+  Suspense,
   createContext,
   useContext,
   useEffect,
@@ -14,6 +15,7 @@ import classNames from "classnames";
 import Child1 from "../child/index01";
 import Child2 from "../child/index02";
 import A from "./A";
+import Loading from "../loading";
 interface User {
   // 假设用户对象有 id 和 name，根据实际情况调整
   uid: string;
@@ -78,14 +80,13 @@ const tabs = [
 // learn context
 const msg = "this is a message";
 
-const reduer = (state:any,action:any)=>{
-  if(action.type === 'add'){
+const reduer = (state: any, action: any) => {
+  if (action.type === "add") {
     return {
-      age:state.age+1
-    }
+      age: state.age + 1,
+    };
   }
-
-}
+};
 export const MsgContext = createContext<string | null>(null); // 创建 Context，并给定一个默认值
 const Comments: FC = () => {
   const [commentList, setCommentList] = useState<Comment[]>(list);
@@ -96,8 +97,7 @@ const Comments: FC = () => {
   const [name, setName] = useState("");
   const [value, setValue] = useState("");
 
-
-  const [state,dispatch] = useReducer(reduer,{age:20})
+  const [state, dispatch] = useReducer(reduer, { age: 20 });
   const handleSubmit = () => {
     const param: Comment = {
       rpid: uuidv4(),
@@ -113,9 +113,9 @@ const Comments: FC = () => {
     // 2.聚焦 dom(useRef) - focus
     inputRef.current?.focus();
   };
-  const handleClick =  (name: string) => {
+  const handleClick = (name: string) => {
     console.log(name);
-    dispatch({type:'add'})
+    dispatch({ type: "add" });
     console.log(state?.age);
     setName(name);
   };
@@ -149,6 +149,14 @@ const Comments: FC = () => {
 
     // 使用排序后的新列表更新状态
     setCommentList(newList);
+  };
+
+  const setChangeOfIpt = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
+    
+    setTimeout(() => {
+      setValue(e.target.value);
+    }, 2000);
   };
   useEffect(() => {
     console.log("Comment list updated", commentList);
@@ -238,14 +246,13 @@ const Comments: FC = () => {
 
       <MsgContext.Provider value={msg}>
         <div>
-          <A></A>
+          <A url="https://jsonplaceholder.typicode.com/posts/1"></A>
         </div>
       </MsgContext.Provider>
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
+      <Suspense fallback={<Loading />}>
+        <input type="text" value={value} onChange={setChangeOfIpt} />
+        <A url="https://jsonplaceholder.typicode.com/posts/1"></A>
+      </Suspense>
     </>
   );
 };
