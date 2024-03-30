@@ -1,6 +1,6 @@
 // store.js
-import {createStore} from 'redux';
-
+import {createStore, applyMiddleware} from 'redux';
+import {thunk} from 'redux-thunk';
 // 定义初始状态
 const initialState: { todos: Todo[], inputValue: string } = {
     todos: [
@@ -26,12 +26,20 @@ function todosReducer(state = initialState, action: Action) {
                 ...state,
                 todos: state.todos.filter(todo => todo === action.payload)
             };
+        case 'FETCH_TODOS_SUCCESS':
+            // 请求成功，添加获取到的数据
+            return {
+                ...state,
+                loading: false,
+                todos: action.payload
+            };
         default:
             return state;
     }
 }
 
 // 创建store
-const store = createStore(todosReducer);
+// @ts-ignore
+const store = createStore(todosReducer, applyMiddleware(thunk));
 
 export default store;

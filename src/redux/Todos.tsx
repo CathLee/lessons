@@ -1,8 +1,8 @@
 // TodoList.js
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {Input, Button, List} from 'antd';
-
+import {fetchTodos} from "./thunk";
 function TodoList() {
     const {todos, inputValue} = useSelector((state: State) => state); // 从Redux store获取todos状态
     const dispatch = useDispatch();
@@ -18,6 +18,10 @@ function TodoList() {
     const handleInputChange  = (e:React.ChangeEvent<HTMLInputElement>)=>{
         setTodo(e.target.value);
     }
+    useEffect(()=>{
+        // @ts-ignore
+        dispatch(fetchTodos())
+    },[dispatch])
     return (
         <div style={{marginTop: '10px', marginLeft: '10px'}}>
             <div>
