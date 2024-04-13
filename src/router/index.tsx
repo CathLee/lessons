@@ -5,6 +5,7 @@ import {FC} from 'react';
 import {SetStateDemo} from "../classComponent/eventTarget";
 import {TestState} from "../classComponent/setState";
 import {Counter} from "../classComponent/this";
+import PopoverDemo from "../classComponent/popoverDemo";
 
 const GetRoute: FC = () => {
     return (
@@ -15,6 +16,7 @@ const GetRoute: FC = () => {
                 <Route path="/event" element={<SetStateDemo/>}/>
                 <Route path="/state" element={<TestState/>}/>
                 <Route path="/count" element={<Counter/>}/>
+                <Route path="/HOC" element={<PopoverDemo/>}/>
             </Routes>
         </Router>
     );
