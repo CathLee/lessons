@@ -13,18 +13,17 @@ const Index = () => {
         if (isLoading()) return
         const lk = pushTask()
         try {
+            // mock the fetch api execution
             await new Promise<void>(resolve => setTimeout(() => {
-                console.log('ddd')
                 resolve()
             }, 1000))
         } finally {
             finishTask(lk)
         }
         await execute(() => new Promise<void>(resolve => setTimeout(() => {
-            console.log('bbbb')
             resolve()
         }, 1000)))
-    }, [pushTask, finishTask, isLoading])
+    }, [pushTask, finishTask, isLoading,execute])
 
     return (
         <div>

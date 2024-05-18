@@ -1,6 +1,6 @@
 /*
  * @Date: 2024-05-13 22:17:21
- * @Description:
+ * @Description: Test UseLoading Demo
  */
 import {
     createContext,
@@ -33,7 +33,6 @@ export interface UseLoadingOptions {
 
 // todo:mock数据而已
 export default function NotImplementedError(taskKey: string): never {
-    console.log(taskKey)
     throw new Error("NotImplementedError");
 }
 export const LoadingContext = createContext({
@@ -68,7 +67,7 @@ export const useLoading = ({delay = 100, onChange}: UseLoadingOptions = {}) => {
         const queueRef = useRef<string[]>([]);
         const {push: globalPush, finish: globalFinish} = useContext(LoadingContext);
         // loading任务队列
-        const pushTask: PushFunc = (key?: string): string => {
+        const pushTask: PushFunc = useCallback((key?: string): string => {
             const taskKey = key || `${Date.now()}_${Math.random()}_${Math.random()}`;
             // When globalPush is a non-initialized value
             try {
@@ -86,7 +85,7 @@ export const useLoading = ({delay = 100, onChange}: UseLoadingOptions = {}) => {
             queueRef.current.push(taskKey);
             tick()
             return taskKey;
-        };
+        },[globalPush,tick]);
 
         const finishTask = useCallback(
             (taskKey: string) => {
@@ -106,16 +105,16 @@ export const useLoading = ({delay = 100, onChange}: UseLoadingOptions = {}) => {
                 if (index !== -1) {
                     queueRef.current.splice(index, 1)
                     // 不是很懂这里的onChange的意义是什么以及loadingProxy.current的意义
-                    if (onChange && ((queueRef.current.length === 0 && loadingProxy.current) ||
-                        (!loadingProxy.current && queueRef.current.length > 0))) {
-                        onChange(queueRef.current.length > 0)
-                    }
+                    // if (onChange && ((queueRef.current.length === 0 && loadingProxy.current) ||
+                    //     (!loadingProxy.current && queueRef.current.length > 0))) {
+                    //     onChange(queueRef.current.length > 0)
+                    // }
                     // 当前loading队列已执行完
                     return true;
                 }
                 return false
 
-            }, [onChange]
+            }, [onChange,globalFinish,loadingProxy]
         )
         const execute = useCallback<ExecFunc>(async <T>(runner: () => Promise<T>): Promise<T> => {
             const task = pushTask()
