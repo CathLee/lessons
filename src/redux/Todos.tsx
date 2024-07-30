@@ -1,12 +1,19 @@
 // TodoList.js
-import React, {useEffect, useState} from 'react';
+import React, {memo, useEffect, useMemo, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {Input, Button, List} from 'antd';
 import {fetchTodos} from "./thunk";
+import {useGetApi} from "../api/hooks/useApi";
+
 function TodoList() {
+
+
     const {todos, inputValue} = useSelector((state: State) => state); // 从Redux store获取todos状态
     const dispatch = useDispatch();
     const [todo, setTodo] = useState<Todo>('');
+    const {data, error, isLoading} = useGetApi('https://cli.github.com/manual/gh_api')
+
+
     // 删除todo的函数
     const removeTodo = (id: number) => {
         dispatch({type: 'REMOVE_TODO', payload: id});
@@ -22,6 +29,9 @@ function TodoList() {
         // @ts-ignore
         dispatch(fetchTodos())
     },[dispatch])
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
     return (
         <div style={{marginTop: '10px', marginLeft: '10px'}}>
             <div>
@@ -38,4 +48,4 @@ function TodoList() {
     );
 }
 
-export default TodoList;
+export default memo(TodoList);
